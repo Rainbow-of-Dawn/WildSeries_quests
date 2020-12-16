@@ -1,10 +1,14 @@
+$theme-colors: (
+        "primary": #0074d9,
+        "danger": #ff4136
+);
+
+$link-color: (
+        #081c26
+);
+
 @import "~bootstrap/scss/bootstrap";
 
 body {
     background-color: #158996;
 }
-
-$theme-colors: (
-        "primary": #0074d9,
-        "danger": #ff4136
-);
