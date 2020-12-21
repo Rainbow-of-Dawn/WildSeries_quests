@@ -4,11 +4,31 @@ $theme-colors: (
 );
 
 $link-color: (
-        #081c26
+        #103b51
 );
 
 @import "~bootstrap/scss/bootstrap";
 
 body {
-    background-color: #158996;
+    background-color: #4da4ac;
+}
+
+.bg-light {
+    background-color: #adcfd6 !important;
+}
+
+.navbar-light .navbar-brand {
+    color: #117179;
+}
+
+.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .nav-link.active {
+    color: #117179;
+}
+
+p {
+    color: #103b51;
+}
+
+h1, h3 {
+    color: #103b51;
 }
