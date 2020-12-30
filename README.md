@@ -17,3 +17,5 @@ Quest 14: https://youtu.be/dUp3BiWZoy0
 Quest 15: https://youtu.be/RPNMNOI-rrs
 
 Quest 16: https://youtu.be/gB-dFKo85Uk
+
+Quest 17: https://youtu.be/ItaS5QGOCJU
