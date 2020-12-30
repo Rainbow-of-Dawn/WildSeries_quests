@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {# {% block title %}Série #{{ category.name }}{% endblock %} #}
 {% block body %}
-    <h1>Catégorie {{ programs[0].category.name }}  </h1>
+{#<h1>Catégorie {{ programs[0].category.name }}  </h1>#}
     {% for program in programs %}
     <div class="media">
         <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">

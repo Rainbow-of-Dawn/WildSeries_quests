@@ -1,6 +1,5 @@
 <?php
 
-// src/Controller/ProgramController.php
 namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -12,6 +11,7 @@ use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
 use App\Form\ProgramType;
+use App\Service\Slugify;
 
 /**
  * @Route("/programs", name="program_")
@@ -37,8 +37,9 @@ class ProgramController extends AbstractController
      * The controller for the program add form
      *
      * @Route("/new", name="new")
+     * * @return Response
      */
-    public function new(Request $request) : Response
+    public function new(Request $request, Slugify $slugify) : Response
     {
         // Create a new Program Object
         $program = new Program();
@@ -51,6 +52,8 @@ class ProgramController extends AbstractController
             // Deal with the submitted data
             // Get the Entity Manager
             $entityManager = $this->getDoctrine()->getManager();
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
             // Persist Category Object
             $entityManager->persist($program);
             // Flush the persisted object
@@ -66,18 +69,20 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/show/{id<^[0-9]+$>}", name="show")
+     * @Route("/{programSlug}", methods={"GET"}, name="show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
+     * @param Program $program
      * @return Response
      */
-    public function show(int $id): Response
+    public function show(Program $program): Response
     {
-        $program = $this->getDoctrine()
+        /*$program = $this->getDoctrine()
             ->getRepository(Program::class)
-            ->findOneBy(['id' => $id]);
+            ->findOneBy(['program' => $program]);*/
 
         if (!$program) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $id . ' found in program\'s table.'
+                'No program with id : ' . $program->getId() . ' found in program\'s table.'
             );
         }
 
@@ -92,19 +97,22 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{programId}/seasons/{seasonId}", name="season_show")
-     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
+     * @Route("/{programSlug}/seasons/{seasonId}", name="season_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
      * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
+     * @param Program $program
+     * @param Season $season
+     * @return Response
      */
     public function showSeason(Program $program, Season $season): Response
     {
-        /*$program = $this->getDoctrine()
+        $program = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findOneBy(['id' => $program]);
 
         if (!$program) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $program . ' found in program\'s table.'
+                'No program with id : ' . $program->getId() . ' found in program\'s table.'
             );
         }
 
@@ -114,9 +122,9 @@ class ProgramController extends AbstractController
 
         if (!$season) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $season . ' found in program\'s table.'
+                'No program with id : ' . $season->getId() . ' found in program\'s table.'
             );
-        }*/
+        }
 
         return $this->render('/program/season_show.html.twig', [
             'program' => $program,
@@ -125,20 +133,24 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{programId}/seasons/{seasonId}/episodes/{episodeId}", name="episode_show")
-     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
+     * @Route("/{programSlug}/seasons/{seasonId}/episodes/{episodeSlug}", name="episode_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
      * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
-     * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})
+     * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episodeSlug": "slug"}})
+     * @param Program $program
+     * @param Season $season
+     * @param Episode $episode
+     * @return Response
      */
     public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {
-        /*$program = $this->getDoctrine()
+        $program = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findOneBy(['id' => $program]);
 
         if (!$program) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $program . ' found in program\'s table.'
+                'No program with id : ' . $program->getId() . ' found in program\'s table.'
             );
         }
 
@@ -148,7 +160,7 @@ class ProgramController extends AbstractController
 
         if (!$season) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $season . ' found in program\'s table.'
+                'No program with id : ' . $season->getId() . ' found in program\'s table.'
             );
         }
 
@@ -158,9 +170,9 @@ class ProgramController extends AbstractController
 
         if (!$episode) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $episode . ' found in program\'s table.'
+                'No program with id : ' . $episode->getId() . ' found in program\'s table.'
             );
-        }*/
+        }
 
         return $this->render('/program/episode_show.html.twig', [
             'program' => $program,
