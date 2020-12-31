@@ -23,11 +23,21 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/programs">Programs <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/programs">Programs<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="/categories">Categories <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/categories">Categories<span class="sr-only">(current)</span></a>
                 </li>
+                {% if app.user %}
+                    {{ app.user.email }}
+                    <li class="nav-item active">
+                        <a class="nav-link"  href="{{ path('app_logout') }}">Se déconnecter<span class="sr-only">(current)</span></a>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link"  href="{{ path('app_login') }}">Se connecter<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </nav>
