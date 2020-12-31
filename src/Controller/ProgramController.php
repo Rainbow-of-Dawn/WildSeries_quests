@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Form\ProgramType;
 use App\Service\Slugify;
 
@@ -153,7 +155,7 @@ class ProgramController extends AbstractController
      * @param Episode $episode
      * @return Response
      */
-    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    public function showEpisode(Program $program, Season $season, Episode $episode, Request $request): Response
     {
         $program = $this->getDoctrine()
             ->getRepository(Program::class)
@@ -185,10 +187,39 @@ class ProgramController extends AbstractController
             );
         }
 
-        return $this->render('/program/episode_show.html.twig', [
+        $comments = $this->getDoctrine()
+            ->getRepository(Comment::class)
+            ->findBy(['episode' => $episode, 'id' => 'DESC'] );
+
+        // Create a new Category Object
+        $comment = new Comment();
+        // Create the associated Form
+        $form = $this->createForm(CommentType::class, $comment);
+        // Get data from HTTP request
+        $form->handleRequest($request);
+        // Was the form submitted ?
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Deal with the submitted data
+            // Get the Entity Manager
+            $entityManager = $this->getDoctrine()->getManager();
+            $comment->setEpisode($episode);
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+            // returns your User object, or null if the user is not authenticated
+            // use inline documentation to tell your editor your exact User class
+            /** @var \App\Entity\User $user */
+            $user = $this->getUser();
+            $comment->setAuthor($user);
+            // Persist Category Object
+            $entityManager->persist($comment);
+            // Flush the persisted object
+            $entityManager->flush();
+        }
+
+        return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
             'episode' => $episode,
+            "form" => $form->createView(),
         ]);
     }
 }
