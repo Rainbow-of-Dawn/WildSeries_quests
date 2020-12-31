@@ -6,6 +6,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Program;
 use App\Entity\Season;
@@ -37,9 +40,10 @@ class ProgramController extends AbstractController
      * The controller for the program add form
      *
      * @Route("/new", name="new")
-     * * @return Response
+     * @param MailerInterface $mailer
+     * @return Response
      */
-    public function new(Request $request, Slugify $slugify) : Response
+    public function new(Request $request, Slugify $slugify, MailerInterface $mailer) : Response
     {
         // Create a new Program Object
         $program = new Program();
@@ -59,6 +63,13 @@ class ProgramController extends AbstractController
             // Flush the persisted object
             $entityManager->flush();
             // Finally redirect to categories list
+            $email = (new Email());
+            $email->from('your_email@example.com');
+            $email->to('your_email@example.com');
+            $email->subject('A news series is out!');
+            $email->html($this->renderView('Program/newProgramEmail.html.twig', ['program' => $program]));
+            $mailer->send($email);
+
             return $this->redirectToRoute('program_index');
         }
 
