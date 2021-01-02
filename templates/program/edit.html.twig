@@ -1,0 +1,18 @@
+{% block title %}New program{% endblock %}
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        {{ form_row(form.title, { 'label': 'title' }) }}
+        {{ form_row(form.poster, { 'label': 'poster picture' }) }}
+        {{ form_row(form.category, { 'label': 'series category' }) }}
+        {{ form_row(form.country, { 'label': 'country' }) }}
+        {{ form_row(form.year, {'label': 'release year' }) }}
+        {{ form_row(form.summary, { 'label': 'summary' } ) }}
+        {{ form_row(form.actors, { 'label': 'actors' } ) }}
+        <input type='submit' class="btn-submit" value='Edit'>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

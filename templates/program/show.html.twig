@@ -7,6 +7,8 @@
         <div class="media-body">
             <h1 class="mt-0">{{ program.title }}</h1>
             <p>Catégorie : {{ program.category.name }}</p>
+            <p>Pays : {{ program.country }}</p>
+            <p>Année : {{ program.year }}</p>
             <p>{{ program.summary }}</p>
             <h3>Saisons disponibles :</h3>
             {% for season in seasons %}
